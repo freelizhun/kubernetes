@@ -52,6 +52,10 @@ ifeq ($(ARCH),s390x)
 	QEMUARCH=s390x
 endif
 
+ifeq ($(ARCH),sw64)
+	BASEIMAGE?=neokylin:v10-sw
+        QEMUARCH=sw64
+endif
 sub-build-%:
 	$(MAKE) ARCH=$* build
 
@@ -76,7 +80,7 @@ build: clean
 		| sed "s|ARCH|$(QEMUARCH)|g" \
 		> $(TEMP_DIR)/Dockerfile.build
 
-ifeq ($(ARCH),amd64)
+ifeq ($(ARCH),sw64)
 	# When building "normally" for amd64, remove the whole line, it has no part in the amd64 image
 	sed "/CROSS_BUILD_/d" $(TEMP_DIR)/Dockerfile.build > $(TEMP_DIR)/Dockerfile.build.tmp
 else
@@ -91,7 +95,7 @@ endif
 	mv $(TEMP_DIR)/Dockerfile.build.tmp $(TEMP_DIR)/Dockerfile.build
 
 	docker build --pull -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile.build $(TEMP_DIR)
-	docker create --name $(BUILD_IMAGE) $(BUILD_IMAGE)
+	docker create --name $(BUILD_IMAGE) $(BUILD_IMAGE) sh
 	docker export $(BUILD_IMAGE) > $(TEMP_DIR)/$(TAR_FILE)
 	docker build -t $(IMAGE)-$(ARCH):$(TAG) $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
