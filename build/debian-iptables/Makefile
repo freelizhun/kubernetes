@@ -32,12 +32,12 @@ build:
 	cp ./* $(TEMP_DIR)
 	cd $(TEMP_DIR) && sed -i "s|BASEIMAGE|$(BASEIMAGE)|g" Dockerfile
 
-ifneq ($(ARCH),amd64)
+ifneq ($(ARCH),sw64)
 	# Register /usr/bin/qemu-ARCH-static as the handler for non-x86 binaries in the kernel
 	$(SUDO) ../../third_party/multiarch/qemu-user-static/register/register.sh --reset
 endif
 
-	docker build --pull -t $(IMAGE)-$(ARCH):$(TAG) $(TEMP_DIR)
+	docker build -t $(IMAGE)-$(ARCH):$(TAG) $(TEMP_DIR)
 
 push: build
 	docker push $(IMAGE)-$(ARCH):$(TAG)

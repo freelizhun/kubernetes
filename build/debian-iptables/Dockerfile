@@ -13,11 +13,11 @@
 # limitations under the License.
 
 FROM BASEIMAGE
-
+COPY ./1.repo /etc/yum.repos.d/1.repo
 RUN clean-install \
     conntrack \
     ebtables \
     ipset \
     iptables \
-    kmod \
-    netbase
+    kmod
+#    netbase

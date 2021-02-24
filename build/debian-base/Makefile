@@ -94,7 +94,7 @@ else
 endif
 	mv $(TEMP_DIR)/Dockerfile.build.tmp $(TEMP_DIR)/Dockerfile.build
 
-	docker build --pull -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile.build $(TEMP_DIR)
+	docker build -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile.build $(TEMP_DIR)
 	docker create --name $(BUILD_IMAGE) $(BUILD_IMAGE) sh
 	docker export $(BUILD_IMAGE) > $(TEMP_DIR)/$(TAR_FILE)
 	docker build -t $(IMAGE)-$(ARCH):$(TAG) $(TEMP_DIR)

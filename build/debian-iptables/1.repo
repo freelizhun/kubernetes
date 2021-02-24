@@ -1,0 +1,6 @@
+# vim /etc/yum.repos.d/as4k.repo
+[1]
+name=1
+baseurl=http://10.3.6.66/kojifiles/repos/swky10-se-yun-build/latest/sw_64/
+gpgcheck=0
+enabled=1
