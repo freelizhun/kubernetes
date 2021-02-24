@@ -211,9 +211,12 @@ function kube::release::build_server_images() {
     # This fancy expression will expand to prepend a path
     # (${LOCAL_OUTPUT_BINPATH}/${platform}/) to every item in the
     # KUBE_SERVER_IMAGE_BINARIES array.
-    cp "${KUBE_SERVER_IMAGE_BINARIES[@]/#/${LOCAL_OUTPUT_BINPATH}/${platform}/}" \
-      "${release_stage}/server/bin/"
-
+   # cp "${KUBE_SERVER_IMAGE_BINARIES[@]/#/${LOCAL_OUTPUT_BINPATH}/${platform}/}" \
+   #   "${release_stage}/server/bin/"
+   cp /usr/bin/kube-apiserver ${release_stage}/server/bin
+   cp /usr/bin/kube-controller-manager ${release_stage}/server/bin
+   cp /usr/bin/kube-scheduler ${release_stage}/server/bin
+   cp /usr/bin/kube-proxy ${release_stage}/server/bin
     # if we are building hyperkube, we also need to copy that binary
     if [[ "${KUBE_BUILD_HYPERKUBE}" =~ [yY] ]]; then
       cp "${LOCAL_OUTPUT_BINPATH}/${platform}/hyperkube" "${release_stage}/server/bin"
@@ -372,7 +375,7 @@ EOF
         if [[ "${base_image}" =~ busybox ]]; then
           echo "COPY nsswitch.conf /etc/" >> "${docker_file_path}"
         fi
-        "${DOCKER[@]}" build --pull -q -t "${docker_image_tag}" "${docker_build_path}" >/dev/null
+        "${DOCKER[@]}" build -q -t "${docker_image_tag}" "${docker_build_path}" >/dev/null
         "${DOCKER[@]}" save "${docker_image_tag}" > "${binary_dir}/${binary_name}.tar"
         echo "${docker_tag}" > "${binary_dir}/${binary_name}.docker_tag"
         rm -rf "${docker_build_path}"
